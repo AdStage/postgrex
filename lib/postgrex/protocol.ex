@@ -955,6 +955,7 @@ defmodule Postgrex.Protocol do
         msg = Postgrex.Utils.type_msg(info, mod)
         {:error, RuntimeError.exception(message: msg)}
       {:error, nil, _} ->
+        Logger.warn fn -> "RELOAD ON OID #{oid}" end
         {:reload, oid}
     end
   end
