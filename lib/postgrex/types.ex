@@ -65,7 +65,11 @@ defmodule Postgrex.Types do
     filter_oids =
       case oids do
         [] ->
-          ""
+          """
+          WHERE (t.typrelid = 0)
+          AND (t.typelem = 0 OR t.typelem IN (SELECT oid FROM pg_catalog.pg_type WHERE typrelid = 0))
+          """
+
         _  ->
           # equiv to `WHERE t.oid NOT IN (SELECT unnest(ARRAY[#{Enum.join(oids, ",")}]))`
           # `unnest` is not supported in redshift or postgres version prior to 8.4
